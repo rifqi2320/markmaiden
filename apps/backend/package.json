@@ -1,0 +1,17 @@
+{
+  "name": "@markmaiden/backend",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "build": "node --check src/db.js && node --check src/index.js",
+    "dev": "node --watch src/index.js",
+    "lint": "node --check src/db.js && node --check src/index.js",
+    "start": "node src/index.js"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "multer": "^2.0.2",
+    "pg": "^8.16.3"
+  }
+}

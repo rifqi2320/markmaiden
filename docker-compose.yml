@@ -1,0 +1,55 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: markmaiden-postgres
+    environment:
+      POSTGRES_DB: markmaiden
+      POSTGRES_USER: markmaiden
+      POSTGRES_PASSWORD: markmaiden
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U markmaiden -d markmaiden']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: .
+      dockerfile: apps/backend/Dockerfile
+    container_name: markmaiden-backend
+    environment:
+      DATABASE_URL: postgresql://markmaiden:markmaiden@postgres:5432/markmaiden
+      MAX_FILE_SIZE_BYTES: 1048576
+      MAX_SHORTLINKS: 1000
+      PORT: 3000
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: .
+      dockerfile: apps/frontend/Dockerfile
+    container_name: markmaiden-frontend
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+  proxy:
+    build:
+      context: .
+      dockerfile: docker/proxy/Dockerfile
+    container_name: markmaiden-proxy
+    depends_on:
+      - frontend
+      - backend
+    ports:
+      - '12001:80'
+    restart: unless-stopped
+
+volumes:
+  postgres-data:

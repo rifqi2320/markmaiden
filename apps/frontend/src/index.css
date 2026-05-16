@@ -1,0 +1,258 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@400;500;700&display=swap');
+
+:root {
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(circle at 20% 15%, #c5f6fa 0%, transparent 30%),
+    radial-gradient(circle at 80% 5%, #d3f9d8 0%, transparent 34%),
+    linear-gradient(120deg, #f8fbfd 0%, #f4fff8 45%, #f3f8ff 100%);
+  color: #0f172a;
+}
+
+.app-shell {
+  min-height: 100vh;
+}
+
+.app-header {
+  backdrop-filter: blur(8px);
+  background: rgba(255, 255, 255, 0.86);
+  border-bottom: 1px solid rgba(15, 23, 42, 0.1);
+}
+
+.app-main {
+  min-height: calc(100vh - 72px);
+  padding: 10px;
+}
+
+.app-container {
+  min-height: 100%;
+}
+
+.top-stack {
+  min-height: calc(100vh - 92px);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.workspace-grid {
+  flex: 1;
+  min-height: 0;
+}
+
+.share-inline {
+  max-width: min(100%, 720px);
+}
+
+.share-inline a {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.header-actions {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.panel {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  background: rgba(255, 255, 255, 0.82);
+  border-color: rgba(15, 23, 42, 0.12);
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.06);
+}
+
+.editor-textarea {
+  flex: 1;
+  min-height: 0;
+}
+
+.editor-textarea .mantine-Input-wrapper,
+.editor-textarea .mantine-Textarea-input {
+  height: 100%;
+}
+
+.editor-textarea .mantine-Textarea-input {
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.92rem;
+  line-height: 1.6;
+  background: rgba(247, 250, 252, 0.9);
+  min-height: 100%;
+  resize: none;
+}
+
+.preview-scroll {
+  flex: 1;
+  min-height: 0;
+}
+
+.print-fab {
+  position: fixed;
+  right: 14px;
+  bottom: 14px;
+  z-index: 200;
+  box-shadow: 0 10px 24px rgba(12, 166, 120, 0.25);
+}
+
+.markdown-preview {
+  font-size: 0.97rem;
+  line-height: 1.7;
+  color: #0f172a;
+  padding-right: 0.35rem;
+}
+
+.markdown-preview h1,
+.markdown-preview h2,
+.markdown-preview h3,
+.markdown-preview h4 {
+  line-height: 1.25;
+  margin: 1.1rem 0 0.7rem;
+}
+
+.markdown-preview p,
+.markdown-preview ul,
+.markdown-preview ol,
+.markdown-preview table,
+.markdown-preview pre,
+.markdown-preview blockquote {
+  margin: 0.7rem 0;
+}
+
+.markdown-preview table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.markdown-preview table th,
+.markdown-preview table td {
+  border: 1px solid rgba(15, 23, 42, 0.2);
+  padding: 0.45rem 0.6rem;
+  text-align: left;
+}
+
+.markdown-preview pre,
+.markdown-preview code {
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.markdown-preview pre {
+  border-radius: 10px;
+  background: #0f172a;
+  color: #e2e8f0;
+  padding: 0.8rem 0.9rem;
+  overflow-x: auto;
+}
+
+.markdown-preview :not(pre) > code {
+  background: rgba(15, 23, 42, 0.08);
+  padding: 0.15rem 0.35rem;
+  border-radius: 6px;
+}
+
+.markdown-preview blockquote {
+  border-left: 4px solid #0ca678;
+  padding-left: 0.85rem;
+  color: #334155;
+}
+
+.mermaid-diagram {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid rgba(15, 23, 42, 0.15);
+  border-radius: 10px;
+  background: #ffffff;
+  padding: 0.7rem;
+}
+
+.mermaid-diagram svg {
+  max-width: 100%;
+  height: auto;
+}
+
+@media (max-width: 768px) {
+  .app-header .mantine-Group-root {
+    align-items: flex-start;
+  }
+
+  .header-actions {
+    max-width: 180px;
+  }
+}
+
+@media print {
+  body {
+    background: #ffffff;
+    color: #000000;
+  }
+
+  .app-header,
+  .panel-editor,
+  .no-print {
+    display: none !important;
+  }
+
+  .app-main {
+    height: auto;
+    padding: 0;
+  }
+
+  .top-stack {
+    min-height: auto;
+    gap: 0;
+  }
+
+  .app-container,
+  .workspace-grid,
+  .panel-preview {
+    height: auto;
+  }
+
+  .panel-preview {
+    border: 0;
+    box-shadow: none;
+    background: #ffffff;
+    padding: 0;
+  }
+
+  .preview-scroll {
+    overflow: visible;
+  }
+
+  .preview-scroll .mantine-ScrollArea-viewport {
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  .markdown-preview {
+    font-size: 11pt;
+    line-height: 1.55;
+    color: #000000;
+    padding-right: 0;
+  }
+
+  .mermaid-diagram {
+    border: 0;
+    padding: 0;
+  }
+}
