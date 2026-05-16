@@ -1,4 +1,4 @@
-import { useDeferredValue, useEffect, useId, useState } from 'react'
+import { memo, useDeferredValue, useEffect, useId, useState } from 'react'
 import {
   Alert,
   Anchor,
@@ -79,7 +79,7 @@ function goHome() {
   }
 }
 
-function MermaidBlock({ chart }) {
+const MermaidBlock = memo(function MermaidBlock({ chart }) {
   const [svg, setSvg] = useState('')
   const [error, setError] = useState('')
   const [copied, setCopied] = useState(false)
@@ -164,7 +164,28 @@ function MermaidBlock({ chart }) {
       dangerouslySetInnerHTML={{ __html: svg }}
     />
   )
+})
+
+function MarkdownCode({ children, className, ...props }) {
+  const content = String(children ?? '').replace(/\n$/, '')
+  const isMermaid = /language-mermaid/.test(className || '')
+
+  if (isMermaid) {
+    return <MermaidBlock chart={content} />
+  }
+
+  return (
+    <code className={className} {...props}>
+      {children}
+    </code>
+  )
 }
+
+const markdownComponents = {
+  code: MarkdownCode,
+}
+
+const markdownRemarkPlugins = [remarkGfm]
 
 function App() {
   const [markdown, setMarkdown] = useState(STARTER_MARKDOWN)
@@ -605,23 +626,8 @@ function App() {
                 <ScrollArea className="preview-scroll" offsetScrollbars>
                   <Box className="markdown-preview">
                     <ReactMarkdown
-                      remarkPlugins={[remarkGfm]}
-                      components={{
-                        code({ children, className, ...props }) {
-                          const content = String(children ?? '').replace(/\n$/, '')
-                          const isMermaid = /language-mermaid/.test(className || '')
-
-                          if (isMermaid) {
-                            return <MermaidBlock chart={content} />
-                          }
-
-                          return (
-                            <code className={className} {...props}>
-                              {children}
-                            </code>
-                          )
-                        },
-                      }}
+                      remarkPlugins={markdownRemarkPlugins}
+                      components={markdownComponents}
                     >
                       {deferredMarkdown}
                     </ReactMarkdown>
