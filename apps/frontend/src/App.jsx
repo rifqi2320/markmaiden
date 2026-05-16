@@ -176,6 +176,7 @@ function App() {
   const [isUpdating, setIsUpdating] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
   const [copied, setCopied] = useState(false)
+  const [isPreviewOnly, setIsPreviewOnly] = useState(false)
 
   const setDraft = (value, options = {}) => {
     setMarkdown(value)
@@ -429,6 +430,14 @@ function App() {
                   {copied ? 'Copied' : 'Copy Link'}
                 </Button>
               ) : null}
+              <Button
+                size="xs"
+                variant={isPreviewOnly ? 'light' : 'default'}
+                color={isPreviewOnly ? 'teal' : 'gray'}
+                onClick={() => setIsPreviewOnly((current) => !current)}
+              >
+                {isPreviewOnly ? 'Show Editor' : 'Preview Only'}
+              </Button>
               {activeCode ? (
                 <Button
                   size="xs"
@@ -480,81 +489,91 @@ function App() {
               </Alert>
             ) : null}
 
-            <SimpleGrid cols={{ base: 1, md: 2 }} spacing="sm" className="workspace-grid">
-              <Paper withBorder radius="md" p="md" className="panel panel-editor">
-                <Group justify="space-between" align="flex-start" mb="sm">
-                  <Box>
-                    <Text fw={700}>Markdown File</Text>
-                    <Text size="sm" c="dimmed">
-                      The backend stores uploads up to 1 MB and keeps the newest 1000 files.
-                    </Text>
-                  </Box>
+            <SimpleGrid
+              cols={isPreviewOnly ? 1 : { base: 1, md: 2 }}
+              spacing="sm"
+              className="workspace-grid"
+            >
+              {!isPreviewOnly ? (
+                <Paper withBorder radius="md" p="md" className="panel panel-editor">
+                  <Group justify="space-between" align="flex-start" mb="sm">
+                    <Box>
+                      <Text fw={700}>Markdown File</Text>
+                      <Text size="sm" c="dimmed">
+                        The backend stores uploads up to 1 MB and keeps the newest 1000 files.
+                      </Text>
+                    </Box>
 
-                  <Group gap="xs" className="no-print">
-                    <Button
-                      component="label"
-                      htmlFor="import-markdown"
-                      size="xs"
-                      variant="default"
-                    >
-                      Import File
-                    </Button>
-                    <input
-                      id="import-markdown"
-                      type="file"
-                      accept=".md,.markdown,.txt,text/markdown,text/plain"
-                      hidden
-                      onChange={handleImportFile}
-                    />
-                    <Button
-                      variant="default"
-                      size="xs"
-                      onClick={() => {
-                        goHome()
-                        setShareInfo(null)
-                        setCopied(false)
-                        setDraft(STARTER_MARKDOWN, { clearStatus: true })
-                        setStatus(null)
-                      }}
-                    >
-                      Insert Template
-                    </Button>
-                    <Button
-                      variant="light"
-                      color="red"
-                      size="xs"
-                      onClick={() => {
-                        goHome()
-                        setShareInfo(null)
-                        setCopied(false)
-                        setDraft('', { clearStatus: true })
-                        setStatus(null)
-                      }}
-                    >
-                      Clear
-                    </Button>
+                    <Group gap="xs" className="no-print">
+                      <Button
+                        component="label"
+                        htmlFor="import-markdown"
+                        size="xs"
+                        variant="default"
+                      >
+                        Import File
+                      </Button>
+                      <input
+                        id="import-markdown"
+                        type="file"
+                        accept=".md,.markdown,.txt,text/markdown,text/plain"
+                        hidden
+                        onChange={handleImportFile}
+                      />
+                      <Button
+                        variant="default"
+                        size="xs"
+                        onClick={() => {
+                          goHome()
+                          setShareInfo(null)
+                          setCopied(false)
+                          setDraft(STARTER_MARKDOWN, { clearStatus: true })
+                          setStatus(null)
+                        }}
+                      >
+                        Insert Template
+                      </Button>
+                      <Button
+                        variant="light"
+                        color="red"
+                        size="xs"
+                        onClick={() => {
+                          goHome()
+                          setShareInfo(null)
+                          setCopied(false)
+                          setDraft('', { clearStatus: true })
+                          setStatus(null)
+                        }}
+                      >
+                        Clear
+                      </Button>
+                    </Group>
                   </Group>
-                </Group>
 
-                <Textarea
-                  value={markdown}
-                  onChange={(event) => setDraft(event.currentTarget.value)}
-                  autosize={false}
-                  className="editor-textarea"
-                  placeholder="Write markdown here..."
-                />
+                  <Textarea
+                    value={markdown}
+                    onChange={(event) => setDraft(event.currentTarget.value)}
+                    autosize={false}
+                    className="editor-textarea"
+                    placeholder="Write markdown here..."
+                  />
 
-                <Text size="xs" c="dimmed" mt="sm">
-                  Current draft size: {formatBytes(new Blob([markdown]).size)} / 1 MB
-                </Text>
-              </Paper>
+                  <Text size="xs" c="dimmed" mt="sm">
+                    Current draft size: {formatBytes(new Blob([markdown]).size)} / 1 MB
+                  </Text>
+                </Paper>
+              ) : null}
 
               <Paper withBorder radius="md" p="md" className="panel panel-preview">
                 <Group justify="space-between" mb="sm">
                   <Box>
                     <Text fw={700}>Rendered Preview</Text>
                     <Text size="sm" c="dimmed">
-                      {isLoading ? 'Loading shared file...' : 'Updates live as you type.'}
+                      {isLoading
+                        ? 'Loading shared file...'
+                        : isPreviewOnly
+                          ? 'Preview-only mode hides the raw markdown.'
+                          : 'Updates live as you type.'}
                     </Text>
                   </Box>
                   <Group gap="xs">
@@ -563,6 +582,15 @@ function App() {
                         Shared Link
                       </Badge>
                     ) : null}
+                    <Button
+                      size="xs"
+                      variant={isPreviewOnly ? 'light' : 'default'}
+                      color={isPreviewOnly ? 'teal' : 'gray'}
+                      className="no-print"
+                      onClick={() => setIsPreviewOnly((current) => !current)}
+                    >
+                      {isPreviewOnly ? 'Show Editor' : 'Preview Only'}
+                    </Button>
                     <Button
                       size="xs"
                       variant="default"
